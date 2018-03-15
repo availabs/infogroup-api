@@ -10,5 +10,12 @@ requires node (recommended version 8.9.4LTS)
 
 4 - ```node server.js```
 
-Go to localhost:3001/ in your browser
+Go to http://localhost:3001/ in your browser
+
+to get data by zipcode ex
+http://localhost:3001/byZip/12203
+
+
+to get data by entry ID
+http://localhost:3001/byid/232719
  
