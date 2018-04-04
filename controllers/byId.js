@@ -27,4 +27,25 @@ function geobyid(bp_id) {
   });
 }
 
-module.exports = geobyid
+const requestGeoById = function( request, response ) {
+    if(!request.params.id) {
+        response.status(400)
+        .json({
+          status: 'Error',
+          responseText: 'No id'
+        })
+    }
+
+    geobyid(request.params.id)
+        .catch(function (err) {
+            return next(err);
+        })
+        .then(data => {
+            response.status(200)
+            .json({
+              data: data,
+            })
+        })
+    
+}
+module.exports = requestGeoById

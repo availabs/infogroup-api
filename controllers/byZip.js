@@ -27,4 +27,29 @@ function geobyzip(zipcode) {
   });
 }
 
-module.exports = geobyzip
+const geoByZipRequest =  function( request, response ) {
+    if(!request.params.zipcode) {
+        response.status(400)
+        .json({
+          status: 'Error',
+          responseText: 'No zipcide specified'
+        })
+    }
+
+    geobyzip(request.params.zipcode)
+        .catch(function (err) {
+            return next(err);
+        })
+        .then(data => {
+            response.status(200)
+            .json({
+              data: data,
+            })
+        })
+    
+}
+
+
+
+
+module.exports = geoByZipRequest

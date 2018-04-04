@@ -1,69 +1,90 @@
-//Module dependencies
+#!/usr/bin/env node
 
-let express = require('express')
-let byZip = require('./controllers/byZip')
-let byId = require('./controllers/byId')
+/**
+ * Module dependencies.
+ */
+let app = require('./api');
+let debug = require('debug')('stop-finder:server');
+let http = require('http');
 
-//Create server
-var app = express();
+/**
+ * Get port from environment and store in Express.
+ */
 
+var port = normalizePort(process.env.PORT || '3001');
+app.set('port', port);
 
+/**
+ * Create HTTP server.
+ */
 
-//Router
-app.get( '/', function( request, response ) {
-    let helloWorld = `
-        Welcome to InfoUSA data API.\n 
-        Docmentation will go here.
-    `
-    response.send(helloWorld);
-});
+var server = http.createServer(app);
 
-app.get( '/byzip/:zipcode', function( request, response ) {
-    if(!request.params.zipcode) {
-        response.status(400)
-        .json({
-          status: 'Error',
-          responseText: 'No zipcide specified'
-        })
-    }
+/**
+ * Listen on provided port, on all network interfaces.
+ */
 
-    byZip(request.params.zipcode)
-        .catch(function (err) {
-            return next(err);
-        })
-        .then(data => {
-            response.status(200)
-            .json({
-              data: data,
-            })
-        })
-    
-});
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
 
-app.get( '/byid/:id', function( request, response ) {
-    if(!request.params.id) {
-        response.status(400)
-        .json({
-          status: 'Error',
-          responseText: 'No id'
-        })
-    }
+/**
+ * Normalize a port into a number, string, or false.
+ */
 
-    byId(request.params.id)
-        .catch(function (err) {
-            return next(err);
-        })
-        .then(data => {
-            response.status(200)
-            .json({
-              data: data,
-            })
-        })
-    
-});
+function normalizePort(val) {
+  var port = parseInt(val, 10);
 
-//Start server
-var port = 3001;
-app.listen( port, function() {
-    console.log( 'Express server listening on port %d in %s mode', port, app.settings.env );
-}); 
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+  console.log('Listening on ' + bind, addr)
+}
