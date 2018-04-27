@@ -3,10 +3,22 @@ import './SideBar.css';
 
 class App extends Component {
 
-  render() {
+  processData(data) {
+    // do some stuff
+    return []
+  }
+  renderTable(data) {
     return (
       <div>
-        {JSON.stringify(this.props.data)}
+        The Final Product
+      </div>
+    )
+  }
+  render() {
+    let tableData = this.processData(this.props.data)
+    return (
+      <div>
+        {this.renderTable(tableData)}
       </div>
     );
   }
