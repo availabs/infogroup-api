@@ -50,7 +50,7 @@ let loadButton = d3.select('.go-button')
 loadButton.on('click',(e) => {
 	let value = d3.select('#zipInput').property("value")
 	if(value.length !== 5 || isNaN(+value)){
-
+		
 	}
  	loadEstablishments(value)
 })
